@@ -1,1 +1,2 @@
 D:\sources\csharp_lab3\LandOfBattle\LandOfBattle\bin\Debug\LandOfBattle.exe.config
+D:\Dropbox\source\csharp\csharp_lab3\LandOfBattle\bin\Debug\LandOfBattle.exe.config
