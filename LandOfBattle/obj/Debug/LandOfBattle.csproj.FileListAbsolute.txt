@@ -1,2 +1,10 @@
 D:\sources\csharp_lab3\LandOfBattle\LandOfBattle\bin\Debug\LandOfBattle.exe.config
 D:\Dropbox\source\csharp\csharp_lab3\LandOfBattle\bin\Debug\LandOfBattle.exe.config
+D:\Dropbox\source\csharp\csharp_lab3\LandOfBattle\bin\Debug\LandOfBattle.exe
+D:\Dropbox\source\csharp\csharp_lab3\LandOfBattle\bin\Debug\LandOfBattle.pdb
+D:\Dropbox\source\csharp\csharp_lab3\LandOfBattle\obj\Debug\LandOfBattle.csprojResolveAssemblyReference.cache
+D:\Dropbox\source\csharp\csharp_lab3\LandOfBattle\obj\Debug\LandOfBattle.frmMain.resources
+D:\Dropbox\source\csharp\csharp_lab3\LandOfBattle\obj\Debug\LandOfBattle.Properties.Resources.resources
+D:\Dropbox\source\csharp\csharp_lab3\LandOfBattle\obj\Debug\LandOfBattle.csproj.GenerateResource.Cache
+D:\Dropbox\source\csharp\csharp_lab3\LandOfBattle\obj\Debug\LandOfBattle.exe
+D:\Dropbox\source\csharp\csharp_lab3\LandOfBattle\obj\Debug\LandOfBattle.pdb
