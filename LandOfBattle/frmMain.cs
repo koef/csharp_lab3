@@ -13,6 +13,8 @@ namespace LandOfBattle
 {
     public partial class frmMain : Form
     {
+        BattleField bf;
+        Cannon cn;
         public frmMain()
         {
             InitializeComponent();
@@ -94,9 +96,9 @@ namespace LandOfBattle
 
             public Cannon(int fieldWidth, int fieldHeight, int X, int Y, PaintEventArgs paintEvent)
             {
-                Height = fieldHeight / 8;
-                deltaWidth = 3;
-                bottomWidth = fieldWidth / 10;
+                Height = fieldHeight / 7;
+                deltaWidth = 5;
+                bottomWidth = fieldWidth / 24;
                 topWidth = bottomWidth - deltaWidth * 2;
                 leftBottomPointX = fieldWidth / 2 - bottomWidth / 2 + X;
                 leftBottomPointY = fieldHeight + Y;
@@ -110,18 +112,34 @@ namespace LandOfBattle
                 pe = paintEvent;
             }
 
+            public void PullUp()
+            {
+                deltaWidth -= 1;
+                leftTopPointY += 5;
+                rightTopPointY += 5;
+                this.Draw();
+            }
+
+            public void PullDown()
+            {
+                deltaWidth += 1;
+                leftTopPointY -= 5;
+                rightTopPointY -= 5;
+                this.Draw();
+            }
+
             public void Draw()
             {
                 Graphics g = pe.Graphics;
-                GraphicsPath pathCannon = new GraphicsPath(new Point[] {
-                    new Point(leftBottomPointX, leftBottomPointY), new Point(leftTopPointX, leftTopPointY),
-                    new Point(rightTopPointX, rightTopPointY), new Point(rightBottomPointX, rightBottomPointY) },
-                    new byte[] {
-                        (byte)PathPointType.Start,
-                        (byte)PathPointType.Line,
-                        (byte)PathPointType.Bezier,
-                        (byte)PathPointType.Line,
-                });
+
+                GraphicsPath pathCannon = new GraphicsPath();
+                pathCannon.AddLine(rightBottomPointX, rightBottomPointY, leftBottomPointX, leftBottomPointY);
+                pathCannon.AddLine(leftBottomPointX, leftBottomPointY, leftTopPointX, leftTopPointY);
+                pathCannon.AddLine(leftTopPointX, leftTopPointY, rightTopPointX, rightTopPointY);
+                pathCannon.AddLine(rightTopPointX, rightTopPointY, rightBottomPointX, rightBottomPointY);
+
+                //Pen pn = new Pen(Color.Brown);
+                //g.DrawPath(pn, pathCannon);
                 SolidBrush brushCannon = new SolidBrush(Color.Brown);
                 g.FillPath(brushCannon, pathCannon);
             }
@@ -130,9 +148,16 @@ namespace LandOfBattle
         {
             int fieldWidth = this.Width - 30;
             int fieldHeight = this.Height - 45;
-            //BattleField bf = new BattleField(fieldWidth, fieldHeight, 10, 10, e);
-            //bf.Draw();
-            Cannon cn = new Cannon(fieldWidth, fieldHeight, 10, 10, e);
+            bf = new BattleField(fieldWidth, fieldHeight, 10, 10, e);
+            bf.Draw();
+            cn = new Cannon(fieldWidth, fieldHeight, 10, 10, e);
+            cn.Draw();
+        }
+
+        private void btnUp_Click(object sender, EventArgs e)
+        {
+            bf.Draw();
+            cn.PullUp();
             cn.Draw();
         }
     }
