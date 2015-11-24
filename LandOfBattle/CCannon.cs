@@ -1,6 +1,7 @@
 ﻿using LandOfBattle.Properties;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,11 @@ namespace LandOfBattle
 
         public void TurnLeft()
         {
-
+            using (Graphics gfx = Graphics.FromImage(_bitmap))
+            {
+                gfx.TranslateTransform((float)_bitmap.Width / 2, (float)_bitmap.Height / 2);
+                gfx.RotateTransform(10);
+            }
         }
     }
 }
