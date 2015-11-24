@@ -9,12 +9,12 @@ namespace LandOfBattle
 {
     class CImageBase : IDisposable
     {
-        Bitmap _bitmap;
+        protected Bitmap _bitmap;
         private int X;
         private int Y;
 
-        public int Left { get { return X; }; set { X = value; } }
-        public int Top { get { return Y; }; set { Y = value; } }
+        public int Left { get { return X; } set { X = value; } }
+        public int Top { get { return Y; } set { Y = value; } }
 
         public CImageBase(Bitmap _resource)
         {
