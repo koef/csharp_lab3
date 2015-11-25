@@ -47,6 +47,7 @@
             this.MaximizeBox = false;
             this.Name = "frmMain";
             this.Text = "Land of battle";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.frmMain_MouseMove);
             this.ResumeLayout(false);
 

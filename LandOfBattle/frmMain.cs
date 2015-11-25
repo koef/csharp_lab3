@@ -23,7 +23,7 @@ namespace LandOfBattle
         public frmMain()
         {
             InitializeComponent();
-            _cannon = new CCannon() { Left = 397, Top = 416 };
+            _cannon = new CCannon() { Left = 397, Top = 446 };
         }
 
 
@@ -54,7 +54,16 @@ namespace LandOfBattle
             _curY = e.Y;
 #endif
 
-            this.Refresh();
+            Refresh();
+        }
+
+        private void frmMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Left)
+            {
+                _cannon.TurnLeft();
+                Refresh();
+            }
         }
     }
 }
