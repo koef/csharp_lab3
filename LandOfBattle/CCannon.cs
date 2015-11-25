@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,14 +13,45 @@ namespace LandOfBattle
     {
         //private int X;
         //private int Y;
-        public CCannon() : base(Resources.cannon) { }
+        private static Bitmap bitmapCannon = Resources.cannon1;
+        public int angle;
+
+        public CCannon() : base(Resources.cannon1)
+        {
+            angle = 0;
+        }
+
+        public void TurnRight()
+        {
+            
+            if (angle <= 20)
+            {
+                angle++;
+                using (Graphics gfx = Graphics.FromImage(_bitmap))
+                {
+                    gfx.TranslateTransform((float)bitmapCannon.Width / 2, (float)bitmapCannon.Height / 2);
+                    gfx.RotateTransform(angle);
+                    gfx.TranslateTransform(-(float)bitmapCannon.Width / 2, -(float)bitmapCannon.Height / 2);
+                    gfx.Clear(Color.Transparent);
+                    gfx.DrawImage(bitmapCannon, 0, 0);
+                }
+            }
+        }
 
         public void TurnLeft()
         {
-            using (Graphics gfx = Graphics.FromImage(_bitmap))
+            
+            if (angle >= -20)
             {
-                gfx.TranslateTransform((float)_bitmap.Width / 2, (float)_bitmap.Height / 2);
-                gfx.RotateTransform(10);
+                angle--;
+                using (Graphics gfx = Graphics.FromImage(_bitmap))
+                {
+                    gfx.TranslateTransform((float)bitmapCannon.Width / 2, (float)bitmapCannon.Height / 2);
+                    gfx.RotateTransform(angle);
+                    gfx.TranslateTransform(-(float)bitmapCannon.Width / 2, -(float)bitmapCannon.Height / 2);
+                    gfx.Clear(Color.Transparent);
+                    gfx.DrawImage(bitmapCannon, 0, 0);
+                }
             }
         }
     }

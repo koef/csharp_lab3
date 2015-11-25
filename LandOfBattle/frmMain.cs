@@ -19,18 +19,20 @@ namespace LandOfBattle
         int _curY = 0;
 #endif
         CCannon _cannon;
+        Graphics dc;
 
         public frmMain()
         {
             InitializeComponent();
-            _cannon = new CCannon() { Left = 397, Top = 446 };
+            _cannon = new CCannon() { Left = 397, Top = 430 };
+            DoubleBuffered = true;
         }
 
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            Graphics dc = e.Graphics;
+            dc = e.Graphics;
 
             _cannon.DrawImage(dc);
 
@@ -62,6 +64,11 @@ namespace LandOfBattle
             if (e.KeyCode == Keys.Left)
             {
                 _cannon.TurnLeft();
+                Refresh();
+            }
+            if (e.KeyCode == Keys.Right)
+            {
+                _cannon.TurnRight();
                 Refresh();
             }
         }
