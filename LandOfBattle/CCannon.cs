@@ -11,11 +11,12 @@ namespace LandOfBattle
 {
     class CCannon : CImageBase
     {
-        private static Bitmap bitmapCannon = Resources.cannon1;
+        private static Bitmap bitmapCannon = Resources.cannon2;
+        private static Bitmap bitmapCannonFire = Resources.cannon_fire;
         public int XAngle;
         public int YAngle;
 
-        public CCannon() : base(Resources.cannon1)
+        public CCannon() : base(Resources.cannon2)
         {
             XAngle = 0;
             YAngle = 0;
@@ -26,7 +27,7 @@ namespace LandOfBattle
             if (XAngle < 20)
             {
                 XAngle++;
-                Rotate(XAngle, YAngle);
+                Rotate(XAngle, YAngle, false);
             }
         }
 
@@ -35,19 +36,7 @@ namespace LandOfBattle
             if (XAngle > -20)
             {
                 XAngle--;
-                Rotate(XAngle, YAngle);
-            }
-        }
-
-        private void Rotate_(int _xangle)
-        {
-            using (Graphics gfx = Graphics.FromImage(_bitmap))
-            {
-                gfx.TranslateTransform((float)bitmapCannon.Width / 2, (float)bitmapCannon.Height);
-                gfx.RotateTransform(_xangle);
-                gfx.TranslateTransform(-(float)bitmapCannon.Width / 2, -(float)bitmapCannon.Height);
-                gfx.Clear(Color.Transparent);
-                gfx.DrawImage(bitmapCannon, 0, 0);
+                Rotate(XAngle, YAngle, false);
             }
         }
 
@@ -55,7 +44,7 @@ namespace LandOfBattle
         {
             if (YAngle < 18) {
                 YAngle++;
-                Rotate(XAngle, YAngle);
+                Rotate(XAngle, YAngle, false);
             }
         }
 
@@ -64,11 +53,11 @@ namespace LandOfBattle
             if (YAngle > -18)
             {
                 YAngle--;
-                Rotate(XAngle, YAngle);
+                Rotate(XAngle, YAngle, false);
             }
         }
 
-        private void Rotate(int _xangle, int _yangle)
+        private void Rotate(int _xangle, int _yangle, bool _isShooting)
         {
             Point[] destinationPoints = {
                     new Point(0, YAngle),   // destination for upper-left point of original
@@ -80,8 +69,17 @@ namespace LandOfBattle
                 gfx.RotateTransform(_xangle);
                 gfx.TranslateTransform(-(float)bitmapCannon.Width / 2, -(float)bitmapCannon.Height);
                 gfx.Clear(Color.Transparent);
-                gfx.DrawImage(bitmapCannon, destinationPoints);
+                if (_isShooting) {
+                    gfx.DrawImage(bitmapCannonFire, destinationPoints);
+                } else {
+                    gfx.DrawImage(bitmapCannon, destinationPoints);
+                }
             }
+        }
+
+        public void Fire(bool isShooting)
+        {
+            Rotate(XAngle, YAngle, isShooting);
         }
     }
 }

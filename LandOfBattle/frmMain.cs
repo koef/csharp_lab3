@@ -24,7 +24,7 @@ namespace LandOfBattle
         public frmMain()
         {
             InitializeComponent();
-            _cannon = new CCannon() { Left = 397, Top = 430 };
+            _cannon = new CCannon() { Left = 347, Top = 400 };
             DoubleBuffered = true;
         }
 
@@ -42,7 +42,7 @@ namespace LandOfBattle
             TextRenderer.DrawText(dc, "X=" + _curX.ToString() + "  Y=" + _curY.ToString(), _font,
                 new Rectangle(10, 15, 120, 20), SystemColors.ControlText, _textFlags);
             TextRenderer.DrawText(dc, "XAngle:" + _cannon.XAngle.ToString() + "  YAngle: " + _cannon.YAngle.ToString(), _font,
-                new Rectangle(10, 40, 120, 20), SystemColors.ControlText, _textFlags);
+                new Rectangle(10, 35, 200, 20), SystemColors.ControlText, _textFlags);
 
 #endif
         }
@@ -82,6 +82,20 @@ namespace LandOfBattle
             if (e.KeyCode == Keys.Down)
             {
                 _cannon.PullDown();
+                Refresh();
+            }
+            if (e.KeyCode == Keys.Space)
+            {
+                _cannon.Fire(true);
+                Refresh();
+            }
+        }
+
+        private void frmMain_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                _cannon.Fire(false);
                 Refresh();
             }
         }

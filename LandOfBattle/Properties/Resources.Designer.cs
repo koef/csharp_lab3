@@ -73,9 +73,9 @@ namespace LandOfBattle.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap cannon {
+        internal static System.Drawing.Bitmap cannon_fire {
             get {
-                object obj = ResourceManager.GetObject("cannon", resourceCulture);
+                object obj = ResourceManager.GetObject("cannon_fire", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -86,6 +86,16 @@ namespace LandOfBattle.Properties {
         internal static System.Drawing.Bitmap cannon1 {
             get {
                 object obj = ResourceManager.GetObject("cannon1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap cannon2 {
+            get {
+                object obj = ResourceManager.GetObject("cannon2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
