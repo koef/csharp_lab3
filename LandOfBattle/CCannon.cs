@@ -26,7 +26,7 @@ namespace LandOfBattle
             if (XAngle < 20)
             {
                 XAngle++;
-                Rotate(XAngle);
+                Rotate(XAngle, YAngle);
             }
         }
 
@@ -35,11 +35,11 @@ namespace LandOfBattle
             if (XAngle > -20)
             {
                 XAngle--;
-                Rotate(XAngle);
+                Rotate(XAngle, YAngle);
             }
         }
 
-        private void Rotate(int _xangle)
+        private void Rotate_(int _xangle)
         {
             using (Graphics gfx = Graphics.FromImage(_bitmap))
             {
@@ -55,7 +55,7 @@ namespace LandOfBattle
         {
             if (YAngle < 18) {
                 YAngle++;
-                Pull(YAngle);
+                Rotate(XAngle, YAngle);
             }
         }
 
@@ -64,11 +64,11 @@ namespace LandOfBattle
             if (YAngle > -18)
             {
                 YAngle--;
-                Pull(YAngle);
+                Rotate(XAngle, YAngle);
             }
         }
 
-        private void Pull(int _yangle)
+        private void Rotate(int _xangle, int _yangle)
         {
             Point[] destinationPoints = {
                     new Point(0, YAngle),   // destination for upper-left point of original
@@ -76,10 +76,12 @@ namespace LandOfBattle
                     new Point(0, _bitmap.Height)};  // destination for lower-left point of original
             using (Graphics gfx = Graphics.FromImage(_bitmap))
             {
+                gfx.TranslateTransform((float)bitmapCannon.Width / 2, (float)bitmapCannon.Height);
+                gfx.RotateTransform(_xangle);
+                gfx.TranslateTransform(-(float)bitmapCannon.Width / 2, -(float)bitmapCannon.Height);
                 gfx.Clear(Color.Transparent);
                 gfx.DrawImage(bitmapCannon, destinationPoints);
             }
         }
-
     }
 }

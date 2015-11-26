@@ -41,7 +41,7 @@ namespace LandOfBattle
             Font _font = new System.Drawing.Font("Arial", 12, FontStyle.Bold);
             TextRenderer.DrawText(dc, "X=" + _curX.ToString() + "  Y=" + _curY.ToString(), _font,
                 new Rectangle(10, 15, 120, 20), SystemColors.ControlText, _textFlags);
-            TextRenderer.DrawText(dc, "Angle:" + _cannon.XAngle.ToString(), _font,
+            TextRenderer.DrawText(dc, "XAngle:" + _cannon.XAngle.ToString() + "  YAngle: " + _cannon.YAngle.ToString(), _font,
                 new Rectangle(10, 40, 120, 20), SystemColors.ControlText, _textFlags);
 
 #endif
