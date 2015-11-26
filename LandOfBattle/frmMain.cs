@@ -19,12 +19,14 @@ namespace LandOfBattle
         int _curY = 0;
 #endif
         CCannon _cannon;
+        CPowLevel _powLevel;
         Graphics dc;
 
         public frmMain()
         {
             InitializeComponent();
             _cannon = new CCannon() { Left = 347, Top = 400 };
+            _powLevel = new CPowLevel() { Left = 810, Top = 15 };
             DoubleBuffered = true;
         }
 
@@ -35,6 +37,8 @@ namespace LandOfBattle
             dc = e.Graphics;
 
             _cannon.DrawImage(dc);
+            _powLevel.DrawImage(dc);
+
 
 #if (DEBUGGING)
             TextFormatFlags _textFlags = TextFormatFlags.Left | TextFormatFlags.EndEllipsis;

@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="CCannon.cs" />
     <Compile Include="CImageBase.cs" />
+    <Compile Include="CPowLevel.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>

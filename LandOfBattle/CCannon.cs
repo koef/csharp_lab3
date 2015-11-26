@@ -11,12 +11,11 @@ namespace LandOfBattle
 {
     class CCannon : CImageBase
     {
-        private static Bitmap bitmapCannon = Resources.cannon2;
+        private static Bitmap bitmapCannon = Resources.cannon;
         private static Bitmap bitmapCannonFire = Resources.cannon_fire;
-        public int XAngle;
-        public int YAngle;
+        public int XAngle, YAngle;
 
-        public CCannon() : base(Resources.cannon2)
+        public CCannon() : base(Resources.cannon)
         {
             XAngle = 0;
             YAngle = 0;
