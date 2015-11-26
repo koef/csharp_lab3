@@ -10,16 +10,18 @@ namespace LandOfBattle
     class CPowLevel : CImageBase
     {
         public int Level = 0;
-        //private Bitmap bmpPowLevel;
+        private bool growth = true;
+
         public CPowLevel():base(new Bitmap(18, 100))
         {
-            SetLevel(78);
+            SetLevel(0);
         }
 
         private void SetLevel(int percents)
         {
             using (Graphics gfx = Graphics.FromImage(_bitmap))
             {
+                gfx.Clear(Color.Transparent);
                 Pen penBorder = new Pen(Color.Black);
                 SolidBrush brushLevel = new SolidBrush(Color.Red);
                 gfx.DrawRectangle(penBorder, 0, 0, _bitmap.Width - 1, _bitmap.Height - 1);
@@ -42,7 +44,17 @@ namespace LandOfBattle
 
         public void NextLevel()
         {
-            SetLevel(100);
+            if(growth == true)
+            {
+                Level += 10;
+                if (Level == 100) growth = false;
+            }
+            else
+            {
+                Level -= 10;
+                if (Level == 0) growth = true;
+            }
+            SetLevel(Level);
         }
     }
 }

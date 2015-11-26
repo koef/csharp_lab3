@@ -1,4 +1,5 @@
 ﻿#define DEBUGGING
+using LandOfBattle.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -25,7 +27,7 @@ namespace LandOfBattle
         public frmMain()
         {
             InitializeComponent();
-            _cannon = new CCannon() { Left = 347, Top = 400 };
+            _cannon = new CCannon() { Left = 347, Top = 405 };
             _powLevel = new CPowLevel() { Left = 810, Top = 15 };
             DoubleBuffered = true;
         }
@@ -45,8 +47,10 @@ namespace LandOfBattle
             Font _font = new System.Drawing.Font("Arial", 12, FontStyle.Bold);
             TextRenderer.DrawText(dc, "X=" + _curX.ToString() + "  Y=" + _curY.ToString(), _font,
                 new Rectangle(10, 15, 120, 20), SystemColors.ControlText, _textFlags);
-            TextRenderer.DrawText(dc, "XAngle:" + _cannon.XAngle.ToString() + "  YAngle: " + _cannon.YAngle.ToString(), _font,
+            TextRenderer.DrawText(dc, "XAngle: " + _cannon.XAngle.ToString() + "  YAngle: " + _cannon.YAngle.ToString(), _font,
                 new Rectangle(10, 35, 200, 20), SystemColors.ControlText, _textFlags);
+            TextRenderer.DrawText(dc, "POW Level: " + _powLevel.Level.ToString(), _font,
+                new Rectangle(10, 55, 200, 20), SystemColors.ControlText, _textFlags);
 
 #endif
         }
@@ -90,6 +94,7 @@ namespace LandOfBattle
             }
             if (e.KeyCode == Keys.Space)
             {
+                tmrPow.Enabled = true;
                 _cannon.Fire(true);
                 Refresh();
             }
@@ -99,9 +104,23 @@ namespace LandOfBattle
         {
             if (e.KeyCode == Keys.Space)
             {
+                tmrPow.Enabled = false;
+                CannonFire();
                 _cannon.Fire(false);
                 Refresh();
             }
+        }
+
+        private void tmrPow_Tick(object sender, EventArgs e)
+        {
+            _powLevel.NextLevel();
+            Refresh();
+        }
+
+        private void CannonFire()
+        {
+            SoundPlayer fireSound = new SoundPlayer(Resources.CannonSound);
+            fireSound.Play();
         }
     }
 }
