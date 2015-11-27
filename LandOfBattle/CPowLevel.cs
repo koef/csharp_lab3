@@ -42,6 +42,11 @@ namespace LandOfBattle
             }
         }
 
+        public void Reset()
+        {
+            SetLevel(0);
+        }
+
         public void NextLevel()
         {
             if(growth == true)

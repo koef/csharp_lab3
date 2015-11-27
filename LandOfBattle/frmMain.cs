@@ -20,16 +20,22 @@ namespace LandOfBattle
         int _curX = 0;
         int _curY = 0;
 #endif
-        CCannon _cannon;
-        CPowLevel _powLevel;
+        bool powLevelEnabled = false;
+        bool cannonFireEnabled = false;
+        int cannonFireCounter = 0;
+        CCannon cannon;
+        CPowLevel powLevel;
         Graphics dc;
+        
+
 
         public frmMain()
         {
             InitializeComponent();
-            _cannon = new CCannon() { Left = 347, Top = 405 };
-            _powLevel = new CPowLevel() { Left = 810, Top = 15 };
+            cannon = new CCannon() { Left = 347, Top = 405 };
+            powLevel = new CPowLevel() { Left = 810, Top = 15 };
             DoubleBuffered = true;
+            tmrHeartbeat.Enabled = true;
         }
 
 
@@ -38,8 +44,8 @@ namespace LandOfBattle
             base.OnPaint(e);
             dc = e.Graphics;
 
-            _cannon.DrawImage(dc);
-            _powLevel.DrawImage(dc);
+            cannon.DrawImage(dc);
+            powLevel.DrawImage(dc);
 
 
 #if (DEBUGGING)
@@ -47,17 +53,12 @@ namespace LandOfBattle
             Font _font = new System.Drawing.Font("Arial", 12, FontStyle.Bold);
             TextRenderer.DrawText(dc, "X=" + _curX.ToString() + "  Y=" + _curY.ToString(), _font,
                 new Rectangle(10, 15, 120, 20), SystemColors.ControlText, _textFlags);
-            TextRenderer.DrawText(dc, "XAngle: " + _cannon.XAngle.ToString() + "  YAngle: " + _cannon.YAngle.ToString(), _font,
+            TextRenderer.DrawText(dc, "XAngle: " + cannon.XAngle.ToString() + "  YAngle: " + cannon.YAngle.ToString(), _font,
                 new Rectangle(10, 35, 200, 20), SystemColors.ControlText, _textFlags);
-            TextRenderer.DrawText(dc, "POW Level: " + _powLevel.Level.ToString(), _font,
+            TextRenderer.DrawText(dc, "POW Level: " + powLevel.Level.ToString(), _font,
                 new Rectangle(10, 55, 200, 20), SystemColors.ControlText, _textFlags);
 
 #endif
-        }
-
-        private void tmrHeartbeat_Tick(object sender, EventArgs e)
-        {
-            
         }
 
         private void frmMain_MouseMove(object sender, MouseEventArgs e)
@@ -74,29 +75,28 @@ namespace LandOfBattle
         {
             if (e.KeyCode == Keys.Left)
             {
-                _cannon.TurnLeft();
+                cannon.TurnLeft();
                 Refresh();
             }
             if (e.KeyCode == Keys.Right)
             {
-                _cannon.TurnRight();
+                cannon.TurnRight();
                 Refresh();
             }
             if (e.KeyCode == Keys.Up)
             {
-                _cannon.PullUp();
+                cannon.PullUp();
                 Refresh();
             }
             if (e.KeyCode == Keys.Down)
             {
-                _cannon.PullDown();
+                cannon.PullDown();
                 Refresh();
             }
             if (e.KeyCode == Keys.Space)
             {
-                tmrPow.Enabled = true;
-                _cannon.Fire(true);
-                Refresh();
+                powLevelEnabled = true;
+                powLevel.Reset();
             }
         }
 
@@ -104,21 +104,38 @@ namespace LandOfBattle
         {
             if (e.KeyCode == Keys.Space)
             {
-                tmrPow.Enabled = false;
+                powLevelEnabled = false;
+                cannonFireEnabled = true;
                 CannonFire();
-                _cannon.Fire(false);
                 Refresh();
             }
         }
 
-        private void tmrPow_Tick(object sender, EventArgs e)
+        private void tmrHeartbeat_Tick(object sender, EventArgs e)
         {
-            _powLevel.NextLevel();
-            Refresh();
+            if (powLevelEnabled)
+            {
+                powLevel.NextLevel();
+                Refresh();
+            }
+
+            if (cannonFireEnabled)
+            {
+                if (cannonFireCounter >= 2)
+                {
+                    cannonFireEnabled = false;
+                    cannon.Fire(false);
+                    Refresh();
+                    cannonFireCounter = 0;
+                }
+                cannonFireCounter++;
+            }
         }
 
         private void CannonFire()
         {
+            cannon.Fire(true);
+            Refresh();
             SoundPlayer fireSound = new SoundPlayer(Resources.CannonSound);
             fireSound.Play();
         }

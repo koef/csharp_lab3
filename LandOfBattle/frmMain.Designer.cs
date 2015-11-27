@@ -30,17 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             this.tmrHeartbeat = new System.Windows.Forms.Timer(this.components);
-            this.tmrPow = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // tmrHeartbeat
             // 
+            this.tmrHeartbeat.Interval = 50;
             this.tmrHeartbeat.Tick += new System.EventHandler(this.tmrHeartbeat_Tick);
-            // 
-            // tmrPow
-            // 
-            this.tmrPow.Interval = 50;
-            this.tmrPow.Tick += new System.EventHandler(this.tmrPow_Tick);
             // 
             // frmMain
             // 
@@ -63,7 +58,6 @@
         #endregion
 
         private System.Windows.Forms.Timer tmrHeartbeat;
-        private System.Windows.Forms.Timer tmrPow;
     }
 }
 
