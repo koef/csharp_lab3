@@ -10,15 +10,18 @@ namespace LandOfBattle
 {
     class CPartOfWall : CImageBase
     {
-        public int partType = 0;
-        public const int Brick = 0;
-        public const int Target = 1;
-        public const int Empty = 2;
+        public int partType = 1;
+        public static int Brick = 1;
+        public static int Target = 2;
+        public static int Empty = 0;
 
         public int TypeOfPart
         {
             get { return partType; }
         }
+
+        public static int Width = 35;
+        public static int Height = 35;
 
         public CPartOfWall() : base(Resources.brick)
         {
@@ -54,9 +57,19 @@ namespace LandOfBattle
             }
         }
 
+        public Rectangle Rectangle
+        {
+            get
+            {
+                return new Rectangle(Left, Top, Width, Height);
+            }
+        }
+
         public void Destroy()
         {
             ChangeState(Empty);
         }
+
+
     }
 }
