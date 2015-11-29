@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="CCannon.cs" />
     <Compile Include="CImageBase.cs" />
+    <Compile Include="CPartOfWall.cs" />
     <Compile Include="CPowLevel.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
@@ -100,6 +101,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CannonSound.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\brick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\target.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
