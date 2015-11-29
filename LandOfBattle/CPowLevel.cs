@@ -44,6 +44,8 @@ namespace LandOfBattle
 
         public void Reset()
         {
+            Level = 0;
+            growth = true;
             SetLevel(0);
         }
 

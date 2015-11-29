@@ -96,7 +96,6 @@ namespace LandOfBattle
             if (e.KeyCode == Keys.Space)
             {
                 powLevelEnabled = true;
-                powLevel.Reset();
             }
         }
 
@@ -136,6 +135,7 @@ namespace LandOfBattle
         {
             cannon.Fire(true);
             Refresh();
+            powLevel.Reset();
             SoundPlayer fireSound = new SoundPlayer(Resources.CannonSound);
             fireSound.Play();
         }

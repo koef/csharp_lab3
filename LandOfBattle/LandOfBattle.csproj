@@ -50,6 +50,7 @@
     <Compile Include="CImageBase.cs" />
     <Compile Include="CPartOfWall.cs" />
     <Compile Include="CPowLevel.cs" />
+    <Compile Include="CWall.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,9 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\background.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\cannon.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\cannon1.png" />
