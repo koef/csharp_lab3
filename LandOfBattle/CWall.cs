@@ -79,33 +79,57 @@ namespace LandOfBattle
             }
         }
 
-        public int Hit(int xAngle, int yAngle, int Pow)
+        public int Hit(int xAngle, int yAngle, int powMultiplier)
         {
             double xAngleRad = Math.PI * (double)xAngle / 180.0;
             double yAngleRad = Math.PI * (double)yAngle / 180.0;
 
-            if (Pow == 0) Pow = 1;
+            if (powMultiplier == 0) powMultiplier = 1;
+            double Pow = powMultiplier * minPow;
 
-            double Smax = (Math.Pow(minPow * Pow, 2) * Math.Sin(yAngleRad))/g;
+            //дальность броска
+            double Smax = (Math.Pow(Pow, 2) * Math.Sin(yAngleRad)) / g;
+
+            //расстояние до стены с учетом угла горизонтального отклонения
+            double c = distance / Math.Cos(xAngleRad);
 
 
-
-            for (int r = 0; r < 3; r++)
+            //если дальность броска больше расстояния до стены с мишенями
+            if(Smax >= c)
             {
-                for (int c = 0; c < 3; c++)
+                double h;
+                if(yAngle == 0)
                 {
-                    Rectangle shell = new Rectangle(x, y, 10, 10);
-                    if(arrWall[r, c].Rectangle.Contains(shell))
-                    {
-                        if(arrWall[r, c].TypeOfPart != CPartOfWall.Empty)
-                        {
-                            arrWall[r, c].Destroy();
-                            return arrWall[r, c].TypeOfPart;
-                        }
-                    }
+                    h = (g / (2 * Math.Pow(Pow, 2))) * Math.Pow(c, 2);
+                } else
+                {
+                    h = c * Math.Tan(yAngleRad) - (g / (2 * Math.Pow(Pow, 2) * Math.Pow(Math.Cos(yAngleRad), 2))) * Math.Pow(c, 2);
+                }
+                
+                if(h <= blockSize * rows)
+                {
+                    //снаряд попадает в стену
                 }
             }
-            return 0;
+
+
+
+            //for (int r = 0; r < 3; r++)
+            //{
+            //    for (int c = 0; c < 3; c++)
+            //    {
+            //        Rectangle shell = new Rectangle(x, y, 10, 10);
+            //        if(arrWall[r, c].Rectangle.Contains(shell))
+            //        {
+            //            if(arrWall[r, c].TypeOfPart != CPartOfWall.Empty)
+            //            {
+            //                arrWall[r, c].Destroy();
+            //                return arrWall[r, c].TypeOfPart;
+            //            }
+            //        }
+            //    }
+            //}
+            //return 0;
         }
     }
 }
