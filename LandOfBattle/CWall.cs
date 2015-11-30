@@ -11,11 +11,25 @@ namespace LandOfBattle
     {
         public CPartOfWall[,] arrWall;
 
-        private int rows = 3;
-        private int columns = 6;
-        private int beginX = 180;
-        private int beginY = 210;
-        private int targetsNumber = 4;
+        //начальные координаты стены
+        private const int beginX = 180;
+        private const int beginY = 210;
+
+        //количество блоков по-вертикали и горизонтали в стене
+        private const int rows = 3;
+        private const int columns = 6;
+
+        //количество мишеней, которые будут генерироваться в стене
+        private const int targetsNumber = 4;
+
+        //расстояние до стены метрах
+        private const double distance = 300;
+        //размеры блока в метрах
+        private const double blockSize = 0.5;
+        //ускорение свободного падения
+        private const double g = 9.81;
+        //начальная скорость ядра
+        private const double minPow = 5;
 
 
         public CWall()
@@ -65,8 +79,17 @@ namespace LandOfBattle
             }
         }
 
-        public int Hit(int x, int y)
+        public int Hit(int xAngle, int yAngle, int Pow)
         {
+            double xAngleRad = Math.PI * (double)xAngle / 180.0;
+            double yAngleRad = Math.PI * (double)yAngle / 180.0;
+
+            if (Pow == 0) Pow = 1;
+
+            double Smax = (Math.Pow(minPow * Pow, 2) * Math.Sin(yAngleRad))/g;
+
+
+
             for (int r = 0; r < 3; r++)
             {
                 for (int c = 0; c < 3; c++)
