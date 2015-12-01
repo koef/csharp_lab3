@@ -3,6 +3,7 @@ using LandOfBattle.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -24,18 +25,31 @@ namespace LandOfBattle
         bool cannonFireEnabled = false;
         int cannonFireCounter = 0;
 
+        ////количество блоков стены по-горизонтали
+        //const int cols = 6;
+        ////количество блоков стены по-вертикали
+        //const int rows = 3;
+        ////количество генерируемых мишеней
+        //const int targets = 4;
+        ////расстояние до стены метрах
+        //const double distance = 300;
+        ////размеры блока в метрах
+        //const double blockSize = 0.5;
+        ////начальная скорость ядра
+        //const double minPow = 5;
+
         //количество блоков стены по-горизонтали
-        const int cols = 6;
+        int cols = 6;
         //количество блоков стены по-вертикали
-        const int rows = 3;
+        int rows = 3;
         //количество генерируемых мишеней
-        const int targets = 4;
+        int targets = 4;
         //расстояние до стены метрах
-        const double distance = 300;
+        double distance = 300;
         //размеры блока в метрах
-        const double blockSize = 0.5;
+        double blockSize = 0.5;
         //начальная скорость ядра
-        const double minPow = 5;
+        double minPow = 5;
 
         CCannon cannon;
         CPowLevel powLevel;
@@ -47,6 +61,15 @@ namespace LandOfBattle
         public frmMain()
         {
             InitializeComponent();
+
+            //инициализируем переменные из конфигурационного файла
+            cols = Int32.Parse(ConfigurationManager.AppSettings["cols"]);
+            rows = Int32.Parse(ConfigurationManager.AppSettings["rows"]);
+            targets = Int32.Parse(ConfigurationManager.AppSettings["targets"]);
+            distance = Int32.Parse(ConfigurationManager.AppSettings["distance"]);
+            blockSize = Double.Parse(ConfigurationManager.AppSettings["blockSize"]);
+            minPow = Double.Parse(ConfigurationManager.AppSettings["minPow"]);
+
             cannon = new CCannon() { Left = 347, Top = 405 };
             powLevel = new CPowLevel() { Left = 810, Top = 15 };
             wall = new CWall(this.Width / 2 - CPartOfWall.Width * 6 / 2, 190, rows, cols, targets);
