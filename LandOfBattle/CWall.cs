@@ -45,7 +45,7 @@ namespace LandOfBattle
             Random rnd = new Random();
             for (int tc = 0; tc < targetsNumber; tc++)
             {
-                targetPoint[tc] = new Point(rnd.Next(columns - 1), rnd.Next(rows - 1));
+                targetPoint[tc] = new Point(rnd.Next(columns), rnd.Next(rows));
             }
 
             //for (int r = 0; r < rows; r++)

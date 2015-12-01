@@ -10,7 +10,7 @@ namespace LandOfBattle
 {
     class CPartOfWall : CImageBase
     {
-        public int partType = 1;
+        public int partType = 0;
         public static int Brick = 1;
         public static int Target = 2;
         public static int Empty = 0;

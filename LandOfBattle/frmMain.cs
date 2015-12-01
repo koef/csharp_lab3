@@ -24,9 +24,19 @@ namespace LandOfBattle
         bool cannonFireEnabled = false;
         int cannonFireCounter = 0;
 
-        int cols = 6;
-        int rows = 3;
-        int targets = 4;
+        //количество блоков стены по-горизонтали
+        const int cols = 6;
+        //количество блоков стены по-вертикали
+        const int rows = 3;
+        //количество генерируемых мишеней
+        const int targets = 4;
+        //расстояние до стены метрах
+        const double distance = 300;
+        //размеры блока в метрах
+        const double blockSize = 0.5;
+        //начальная скорость ядра
+        const double minPow = 5;
+
         CCannon cannon;
         CPowLevel powLevel;
         Graphics dc;
@@ -39,7 +49,7 @@ namespace LandOfBattle
             InitializeComponent();
             cannon = new CCannon() { Left = 347, Top = 405 };
             powLevel = new CPowLevel() { Left = 810, Top = 15 };
-            wall = new CWall(this.Width / 2 - CPartOfWall.Width * 6 / 2, 210, rows, cols, targets);
+            wall = new CWall(this.Width / 2 - CPartOfWall.Width * 6 / 2, 190, rows, cols, targets);
             DoubleBuffered = true;
             tmrHeartbeat.Enabled = true;
         }
@@ -64,7 +74,6 @@ namespace LandOfBattle
                 new Rectangle(10, 35, 200, 20), SystemColors.ControlText, _textFlags);
             TextRenderer.DrawText(dc, "POW Level: " + powLevel.Level.ToString(), _font,
                 new Rectangle(10, 55, 200, 20), SystemColors.ControlText, _textFlags);
-
 #endif
         }
 
@@ -141,23 +150,20 @@ namespace LandOfBattle
         private void CannonFire()
         {
             cannon.Fire(true);
-            Refresh();
             powLevel.Reset();
             SoundPlayer fireSound = new SoundPlayer(Resources.CannonSound);
             fireSound.Play();
         }
 
 
-        private void CalculateHit(int xAngle, int yAngle, int powMultiplier, int rows)
+        private void CalculateHit()
         {
-            //расстояние до стены метрах
-            const double distance = 300;
-            //размеры блока в метрах
-            const double blockSize = 0.5;
+            int xAngle = cannon.XAngle;
+            int yAngle = cannon.YAngle;
+            int powMultiplier = powLevel.Level;
+
             //ускорение свободного падения
             const double g = 9.81;
-            //начальная скорость ядра
-            const double minPow = 5;
 
             double xAngleRad = Math.PI * (double)xAngle / 180.0;
             double yAngleRad = Math.PI * (double)yAngle / 180.0;
