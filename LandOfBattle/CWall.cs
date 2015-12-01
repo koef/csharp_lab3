@@ -49,8 +49,9 @@ namespace LandOfBattle
             }
 
             //for (int r = 0; r < rows; r++)
-            for (int r = rows - 1; r > 0; r--)
+            for (int r = rows - 1; r >= 0; r--)
             {
+                curX = beginX;
                 for (int c = 0; c < columns; c++)
                 //for (int c = columns - 1; c < columns; c++)
                 {
@@ -72,9 +73,10 @@ namespace LandOfBattle
 
         public void Draw(Graphics gfx)
         {
-            for (int r = 0; r < 3; r++)
+            for (int r = rows - 1; r >= 0; r--)
             {
-                for (int c = 0; c < 3; c++)
+                for (int c = 0; c < columns; c++)
+                //for (int c = columns - 1; c < columns; c++)
                 {
                     arrWall[r, c].DrawImage(gfx);
                 }

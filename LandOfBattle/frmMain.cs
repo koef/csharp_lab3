@@ -23,9 +23,14 @@ namespace LandOfBattle
         bool powLevelEnabled = false;
         bool cannonFireEnabled = false;
         int cannonFireCounter = 0;
+
+        int cols = 6;
+        int rows = 3;
+        int targets = 4;
         CCannon cannon;
         CPowLevel powLevel;
         Graphics dc;
+        CWall wall;
         
 
 
@@ -34,6 +39,7 @@ namespace LandOfBattle
             InitializeComponent();
             cannon = new CCannon() { Left = 347, Top = 405 };
             powLevel = new CPowLevel() { Left = 810, Top = 15 };
+            wall = new CWall(this.Width / 2 - CPartOfWall.Width * 6 / 2, 210, rows, cols, targets);
             DoubleBuffered = true;
             tmrHeartbeat.Enabled = true;
         }
@@ -46,6 +52,7 @@ namespace LandOfBattle
 
             cannon.DrawImage(dc);
             powLevel.DrawImage(dc);
+            wall.Draw(dc);
 
 
 #if (DEBUGGING)
@@ -141,7 +148,7 @@ namespace LandOfBattle
         }
 
 
-        private void CalculateHit(int xAngle, int yAngle, int powMultiplier)
+        private void CalculateHit(int xAngle, int yAngle, int powMultiplier, int rows)
         {
             //расстояние до стены метрах
             const double distance = 300;
