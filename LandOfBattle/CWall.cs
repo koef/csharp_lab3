@@ -12,28 +12,28 @@ namespace LandOfBattle
         public CPartOfWall[,] arrWall;
 
         //начальные координаты стены
-        private const int beginX = 180;
-        private const int beginY = 210;
+        //private const int beginX = 180;
+        //private const int beginY = 210;
 
         //количество блоков по-вертикали и горизонтали в стене
-        private const int rows = 3;
-        private const int columns = 6;
+        private int rows;
+        private int columns;
 
         //количество мишеней, которые будут генерироваться в стене
-        private const int targetsNumber = 4;
-
-        //расстояние до стены метрах
-        private const double distance = 300;
-        //размеры блока в метрах
-        private const double blockSize = 0.5;
-        //ускорение свободного падения
-        private const double g = 9.81;
-        //начальная скорость ядра
-        private const double minPow = 5;
+        private int targetsNumber;
 
 
-        public CWall()
+        public CWall(int beginX, int beginY, int _rows = 3, int _columns = 6, int _targetsNumber = 4)
         {
+            if (_rows <= 4) rows = _rows;
+            else rows = 4;
+
+            if (_columns <= 8) columns = _columns;
+            else columns = 8;
+
+            if (_targetsNumber > columns * rows) targetsNumber = columns * rows;
+            else targetsNumber = _targetsNumber;
+
             arrWall = new CPartOfWall[rows, columns];
 
             Point[] targetPoint;
@@ -48,16 +48,18 @@ namespace LandOfBattle
                 targetPoint[tc] = new Point(rnd.Next(columns - 1), rnd.Next(rows - 1));
             }
 
-            for (int r = 0; r < rows; r++)
+            //for (int r = 0; r < rows; r++)
+            for (int r = rows - 1; r > 0; r--)
             {
                 for (int c = 0; c < columns; c++)
+                //for (int c = columns - 1; c < columns; c++)
                 {
-                    int partType = CPartOfWall.Brick;
+                    int partState = CPartOfWall.Brick;
                     foreach (Point pnt in targetPoint)
                     {
-                        if (pnt.X == c && pnt.Y == r) partType = CPartOfWall.Target;
+                        if (pnt.X == c && pnt.Y == r) partState = CPartOfWall.Target;
                     }
-                    arrWall[r, c] = new CPartOfWall(partType);
+                    arrWall[r, c] = new CPartOfWall(partState);
 
                     arrWall[r, c].Left = curX;
                     arrWall[r, c].Top = curY;
@@ -79,57 +81,61 @@ namespace LandOfBattle
             }
         }
 
-        public int Hit(int xAngle, int yAngle, int powMultiplier)
+        public int Hit(int row, int column, bool isExploding)
         {
-            double xAngleRad = Math.PI * (double)xAngle / 180.0;
-            double yAngleRad = Math.PI * (double)yAngle / 180.0;
-
-            if (powMultiplier == 0) powMultiplier = 1;
-            double Pow = powMultiplier * minPow;
-
-            //дальность броска
-            double Smax = (Math.Pow(Pow, 2) * Math.Sin(yAngleRad)) / g;
-
-            //расстояние до стены с учетом угла горизонтального отклонения
-            double c = distance / Math.Cos(xAngleRad);
-
-
-            //если дальность броска больше расстояния до стены с мишенями
-            if(Smax >= c)
+            int bState = arrWall[row, column].State;
+            if (bState != CPartOfWall.Empty)
             {
-                double h;
-                if(yAngle == 0)
+                if (isExploding)
                 {
-                    h = (g / (2 * Math.Pow(Pow, 2))) * Math.Pow(c, 2);
-                } else
-                {
-                    h = c * Math.Tan(yAngleRad) - (g / (2 * Math.Pow(Pow, 2) * Math.Pow(Math.Cos(yAngleRad), 2))) * Math.Pow(c, 2);
+                    DestroyBlock(row, column); //собственно блок
+                    DestroyBlock(row + 1, column); //блок выше
+                    DestroyBlock(row - 1, column); //ниже
+                    DestroyBlock(row, column + 1); //правее
+                    DestroyBlock(row, column - 1); //левее
                 }
-                
-                if(h <= blockSize * rows)
+                else
                 {
-                    //снаряд попадает в стену
+                    DestroyBlock(row, column);
+                }
+
+            }
+            return bState;
+        }
+
+        private void DestroyBlock(int row, int column)
+        {
+            if(row < rows && row >= 0 && column < columns && column >= 0)
+            {
+                //если блок в верхнем ряду, ничего не сдвигается
+                if (row == rows - 1)
+                {
+                    int type = arrWall[row, column].State;
+                    arrWall[row, column].Destroy();
+                }
+                else
+                {
+
+                    for(int r = row; row < rows; r++)
+                    {
+                        if (r + 1 < rows) arrWall[r, column].ChangeState(arrWall[r, column].State);
+                        else arrWall[r, column].Destroy();
+                    }
+
+                    //если блок в нижнем ряду и представляет собой мишень, то смещаем повторно 
+                    if (row == 0)
+                    {
+                        while(arrWall[row, column].State == CPartOfWall.Target)
+                        {
+                            for (int r = row; row < rows; r++)
+                            {
+                                if (r + 1 < rows) arrWall[r, column].ChangeState(arrWall[r, column].State);
+                                else arrWall[r, column].Destroy();
+                            }
+                        }
+                    }
                 }
             }
-
-
-
-            //for (int r = 0; r < 3; r++)
-            //{
-            //    for (int c = 0; c < 3; c++)
-            //    {
-            //        Rectangle shell = new Rectangle(x, y, 10, 10);
-            //        if(arrWall[r, c].Rectangle.Contains(shell))
-            //        {
-            //            if(arrWall[r, c].TypeOfPart != CPartOfWall.Empty)
-            //            {
-            //                arrWall[r, c].Destroy();
-            //                return arrWall[r, c].TypeOfPart;
-            //            }
-            //        }
-            //    }
-            //}
-            //return 0;
         }
     }
 }

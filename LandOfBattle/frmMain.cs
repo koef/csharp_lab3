@@ -139,5 +139,59 @@ namespace LandOfBattle
             SoundPlayer fireSound = new SoundPlayer(Resources.CannonSound);
             fireSound.Play();
         }
+
+
+        private void CalculateHit(int xAngle, int yAngle, int powMultiplier)
+        {
+            //расстояние до стены метрах
+            const double distance = 300;
+            //размеры блока в метрах
+            const double blockSize = 0.5;
+            //ускорение свободного падения
+            const double g = 9.81;
+            //начальная скорость ядра
+            const double minPow = 5;
+
+            double xAngleRad = Math.PI * (double)xAngle / 180.0;
+            double yAngleRad = Math.PI * (double)yAngle / 180.0;
+
+            if (powMultiplier == 0) powMultiplier = 1;
+            double Pow = powMultiplier * minPow;
+
+            //дальность броска
+            double Smax = (Math.Pow(Pow, 2) * Math.Sin(yAngleRad)) / g;
+
+            //расстояние до стены с учетом угла горизонтального отклонения
+            double c = distance / Math.Cos(xAngleRad);
+
+
+            //если дальность броска больше расстояния до стены с мишенями
+            if (Smax >= c)
+            {
+                double h;
+                if (yAngle == 0)
+                {
+                    h = (g / (2 * Math.Pow(Pow, 2))) * Math.Pow(c, 2);
+                }
+                else
+                {
+                    h = c * Math.Tan(yAngleRad) - (g / (2 * Math.Pow(Pow, 2) * Math.Pow(Math.Cos(yAngleRad), 2))) * Math.Pow(c, 2);
+                }
+
+                if (h <= blockSize * rows)
+                {
+                    //снаряд попадает в стену
+                }
+                else
+                {
+                    //слишком высоко
+                }
+            }
+            else
+            {
+                //снаряд недолетел
+            }
+
+        }
     }
 }

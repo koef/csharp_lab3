@@ -15,7 +15,7 @@ namespace LandOfBattle
         public static int Target = 2;
         public static int Empty = 0;
 
-        public int TypeOfPart
+        public int State
         {
             get { return partType; }
         }
@@ -34,36 +34,39 @@ namespace LandOfBattle
             ChangeState(_partType);
         }
 
-        private void ChangeState(int _partType)
+        public void ChangeState(int _partType)
         {
-            switch (_partType)
+            if(partType != _partType)
             {
-                case 0:
-                    _bitmap = Resources.brick;
-                    partType = Brick;
-                    break;
-                case 1:
-                    _bitmap = Resources.target;
-                    partType = Target;
-                    break;
-                case 2:
-                    _bitmap = new Bitmap(35, 35);
-                    partType = Empty;
-                    break;
-                default:
-                    _bitmap = Resources.brick;
-                    partType = Brick;
-                    break;
+                switch (_partType)
+                {
+                    case 0:
+                        _bitmap = new Bitmap(35, 35);
+                        partType = Empty;
+                        break;
+                    case 1:
+                        _bitmap = Resources.brick;
+                        partType = Brick;
+                        break;
+                    case 2:
+                        _bitmap = Resources.target;
+                        partType = Target;
+                        break;
+                    default:
+                        _bitmap = Resources.brick;
+                        partType = Brick;
+                        break;
+                }
             }
         }
 
-        public Rectangle Rectangle
-        {
-            get
-            {
-                return new Rectangle(Left, Top, Width, Height);
-            }
-        }
+        //public Rectangle Rectangle
+        //{
+        //    get
+        //    {
+        //        return new Rectangle(Left, Top, Width, Height);
+        //    }
+        //}
 
         public void Destroy()
         {
