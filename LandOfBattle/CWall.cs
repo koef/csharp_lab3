@@ -11,10 +11,6 @@ namespace LandOfBattle
     {
         public CPartOfWall[,] arrWall;
 
-        //начальные координаты стены
-        //private const int beginX = 180;
-        //private const int beginY = 210;
-
         //количество блоков по-вертикали и горизонтали в стене
         private int rows;
         private int columns;
@@ -22,15 +18,30 @@ namespace LandOfBattle
         //количество мишеней, которые будут генерироваться в стене
         private int targetsNumber;
 
+        private int _targetRemains = 0;
+
+        public int TargetRemains
+        {
+            get
+            {
+
+                return _targetRemains;
+            }
+        }
 
         public CWall(int beginX, int beginY, int _rows = 3, int _columns = 6, int _targetsNumber = 4)
         {
-            if (_rows <= 4) rows = _rows;
+            //количество блоков по-вертикали не может быть меньше 2 и больше 5
+            if (rows >= 2 && _rows <= 5) rows = _rows;
             else rows = 4;
 
-            if (_columns <= 8) columns = _columns;
+            //количество блоков по-горизонтали не может быть меньше 2 и больше 8
+            //так же оно должно быть обязательно четным, т.к. на этом завязана логика CalculateHit
+            if (_columns >= 2 && _columns <= 8 && _columns % 2 == 0) columns = _columns;
             else columns = 8;
 
+            //если в конструкторе количество мишеней задано больше, чем количество блоков,
+            //то количество мишеней равно количеству блоков в стене
             if (_targetsNumber > columns * rows) targetsNumber = columns * rows;
             else targetsNumber = _targetsNumber;
 
@@ -48,17 +59,22 @@ namespace LandOfBattle
                 targetPoint[tc] = new Point(rnd.Next(columns), rnd.Next(rows));
             }
 
-            //for (int r = 0; r < rows; r++)
             for (int r = rows - 1; r >= 0; r--)
             {
                 curX = beginX;
                 for (int c = 0; c < columns; c++)
-                //for (int c = columns - 1; c < columns; c++)
                 {
                     int partState = CPartOfWall.Brick;
                     foreach (Point pnt in targetPoint)
                     {
-                        if (pnt.X == c && pnt.Y == r) partState = CPartOfWall.Target;
+                        if (pnt.X == c && pnt.Y == r)
+                        {
+                            if(partState != CPartOfWall.Target)
+                            {
+                                partState = CPartOfWall.Target;
+                                _targetRemains += 1;
+                            }
+                        }
                     }
                     arrWall[r, c] = new CPartOfWall(partState);
 
@@ -76,7 +92,6 @@ namespace LandOfBattle
             for (int r = rows - 1; r >= 0; r--)
             {
                 for (int c = 0; c < columns; c++)
-                //for (int c = columns - 1; c < columns; c++)
                 {
                     arrWall[r, c].DrawImage(gfx);
                 }
@@ -112,7 +127,6 @@ namespace LandOfBattle
                 //если блок в верхнем ряду, ничего не сдвигается
                 if (row == rows - 1)
                 {
-                    int type = arrWall[row, column].State;
                     arrWall[row, column].Destroy();
                 }
                 else
@@ -121,7 +135,10 @@ namespace LandOfBattle
                     for(int r = row; r < rows; r++)
                     {
                         if (r + 1 < rows) arrWall[r, column].ChangeState(arrWall[r + 1, column].State);
-                        else arrWall[r, column].Destroy();
+                        else
+                        {
+                            arrWall[r, column].Destroy();
+                        }
                     }
 
                     //если блок в нижнем ряду и представляет собой мишень, то смещаем повторно 
@@ -132,11 +149,19 @@ namespace LandOfBattle
                             for (int r = row; r < rows; r++)
                             {
                                 if (r + 1 < rows) arrWall[r, column].ChangeState(arrWall[r + 1, column].State);
-                                else arrWall[r, column].Destroy();
+                                else
+                                {
+                                    arrWall[r, column].Destroy();
+                                }
                             }
                         }
                     }
                 }
+            }
+            _targetRemains = 0;
+            foreach (CPartOfWall part in arrWall)
+            {
+                if (part.State == CPartOfWall.Target) _targetRemains += 1;
             }
         }
     }

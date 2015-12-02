@@ -92,17 +92,23 @@ namespace LandOfBattle
                 _font, new Rectangle(10, 35, 200, 20), SystemColors.ControlText, _textFlags);
             TextRenderer.DrawText(dc, "POW Level: " + powLevel.Level.ToString(), _font,
                 new Rectangle(10, 55, 200, 20), SystemColors.ControlText, _textFlags);
+            TextRenderer.DrawText(dc, "Targets: " + wall.TargetRemains.ToString(), _font,
+                new Rectangle(10, 75, 200, 20), SystemColors.ControlText, _textFlags);
 #endif
             //индикация типа снаряда
             if (explosiveShells)
             {
-                TextRenderer.DrawText(dc, "Разрывные", _font, new Rectangle(720, 20, 150, 20),
+                TextRenderer.DrawText(dc, "Разрывные", _font, new Rectangle(721, 22, 150, 20),
                     Color.Black, _textFlags);
+                TextRenderer.DrawText(dc, "Разрывные", _font, new Rectangle(720, 20, 150, 20),
+                    Color.White, _textFlags);
             }
             else
             {
-                TextRenderer.DrawText(dc, "Обычные", _font, new Rectangle(720, 20, 150, 20),
+                TextRenderer.DrawText(dc, "Обычные", _font, new Rectangle(721, 22, 150, 20),
                     Color.Black, _textFlags);
+                TextRenderer.DrawText(dc, "Обычные", _font, new Rectangle(720, 20, 150, 20),
+                    Color.White, _textFlags);
             }
 
             //сообщение о точности попадания
@@ -226,9 +232,13 @@ namespace LandOfBattle
             const double g = 9.81;
 
             //сдвиг в блоках относительно левого края стены
-            int shift = 0;
+            //int shift = 0;
+            bool leftSide = false;
 
             double miss;
+
+            int col;
+            int row;
 
             //угол поворота пушки
             double xAngle;
@@ -239,11 +249,12 @@ namespace LandOfBattle
 
             if (cannon.XAngle >= 0)
             {
-                shift = cols / 2;
+                //shift = cols / 2;
                 xAngle = cannon.XAngle;
             }
             else
             {
+                leftSide = true;
                 xAngle = Math.Abs(cannon.XAngle);
             }
 
@@ -280,15 +291,24 @@ namespace LandOfBattle
                     if(b <= blockSize * cols / 2)
                     {
                         //снаряд попадает в стену
-                        int col = (int)Math.Truncate(b / blockSize + shift);
-                        int row = (int)Math.Truncate(h / blockSize);
+                        if (leftSide)
+                        {
+                            col = (int)Math.Abs(Math.Truncate(b / blockSize) - cols / 2 + 1);
+                        }
+                        else
+                        {
+                            col = (int)Math.Truncate(b / blockSize + cols / 2);
+                            
+                        }
+                        
+                        row = (int)Math.Truncate(h / blockSize);
                         wall.Hit(row, col, explosiveShells);
                         hitMessage = "Попадание в " + col.ToString() + " блок " + row.ToString() + "-го ряда";
                     }
                     else
                     {
                         miss = b - blockSize * cols / 2;
-                        if (shift == 0)
+                        if (leftSide)
                         {
                             //снаряд пролетел левее на miss метров
                             hitMessage = "Снаряд пролетел левее на " + Math.Round(miss, 2).ToString() + " метров";

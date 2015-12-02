@@ -22,7 +22,7 @@ namespace LandOfBattle
 
         public double YAngle
         {
-            get { return _YAngle / 2.0; }
+            get { return _YAngle / 1.0; }
         }
 
         public CCannon() : base(Resources.cannon)
