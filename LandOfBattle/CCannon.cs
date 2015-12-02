@@ -17,7 +17,7 @@ namespace LandOfBattle
         public CCannon() : base(Resources.cannon)
         {
             XAngle = 0;
-            YAngle = 0;
+            YAngle = 1;
         }
 
         public void TurnRight()
@@ -40,7 +40,7 @@ namespace LandOfBattle
 
         public void PullDown()
         {
-            if (YAngle > 0) {
+            if (YAngle > 1) {
                 YAngle--;
                 Rotate(XAngle, YAngle, false);
             }

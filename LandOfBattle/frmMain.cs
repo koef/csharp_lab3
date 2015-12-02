@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
 using System.Media;
 using System.Text;
@@ -25,18 +26,7 @@ namespace LandOfBattle
         bool cannonFireEnabled = false;
         int cannonFireCounter = 0;
 
-        ////количество блоков стены по-горизонтали
-        //const int cols = 6;
-        ////количество блоков стены по-вертикали
-        //const int rows = 3;
-        ////количество генерируемых мишеней
-        //const int targets = 4;
-        ////расстояние до стены метрах
-        //const double distance = 300;
-        ////размеры блока в метрах
-        //const double blockSize = 0.5;
-        ////начальная скорость ядра
-        //const double minPow = 5;
+        string hitMessage = "";
 
         //количество блоков стены по-горизонтали
         int cols = 6;
@@ -67,7 +57,7 @@ namespace LandOfBattle
             rows = Int32.Parse(ConfigurationManager.AppSettings["rows"]);
             targets = Int32.Parse(ConfigurationManager.AppSettings["targets"]);
             distance = Int32.Parse(ConfigurationManager.AppSettings["distance"]);
-            blockSize = Double.Parse(ConfigurationManager.AppSettings["blockSize"]);
+            blockSize = Double.Parse(ConfigurationManager.AppSettings["blockSize"], CultureInfo.InvariantCulture);
             minPow = Double.Parse(ConfigurationManager.AppSettings["minPow"]);
 
             cannon = new CCannon() { Left = 347, Top = 405 };
@@ -93,11 +83,17 @@ namespace LandOfBattle
             Font _font = new System.Drawing.Font("Arial", 12, FontStyle.Bold);
             TextRenderer.DrawText(dc, "X=" + _curX.ToString() + "  Y=" + _curY.ToString(), _font,
                 new Rectangle(10, 15, 120, 20), SystemColors.ControlText, _textFlags);
-            TextRenderer.DrawText(dc, "XAngle: " + cannon.XAngle.ToString() + "  YAngle: " + cannon.YAngle.ToString(), _font,
-                new Rectangle(10, 35, 200, 20), SystemColors.ControlText, _textFlags);
+            TextRenderer.DrawText(dc, "XAngle: " + cannon.XAngle.ToString() + "  YAngle: " + cannon.YAngle.ToString(), 
+                _font, new Rectangle(10, 35, 200, 20), SystemColors.ControlText, _textFlags);
             TextRenderer.DrawText(dc, "POW Level: " + powLevel.Level.ToString(), _font,
                 new Rectangle(10, 55, 200, 20), SystemColors.ControlText, _textFlags);
 #endif
+
+            TextFormatFlags hitTextFlags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
+                TextFormatFlags.EndEllipsis;
+            Font hitFont = new System.Drawing.Font("Arial", 18, FontStyle.Bold);
+            TextRenderer.DrawText(dc, hitMessage, _font, new Rectangle(0, 0, this.Width, this.Height), 
+                SystemColors.ControlText, hitTextFlags);
         }
 
         private void frmMain_MouseMove(object sender, MouseEventArgs e)
@@ -173,6 +169,7 @@ namespace LandOfBattle
         private void CannonFire()
         {
             cannon.Fire(true);
+            CalculateHit();
             powLevel.Reset();
             SoundPlayer fireSound = new SoundPlayer(Resources.CannonSound);
             fireSound.Play();
@@ -181,12 +178,30 @@ namespace LandOfBattle
 
         private void CalculateHit()
         {
-            int xAngle = cannon.XAngle;
+            //ускорение свободного падения
+            const double g = 9.81;
+
+            //сдвиг в блоках относительно левого края стены
+            int shift = 0;
+
+            double miss;
+
+            //угол поворота пушки
+            int xAngle;
+
+            //угол наклона пушки
             int yAngle = cannon.YAngle;
             int powMultiplier = powLevel.Level;
 
-            //ускорение свободного падения
-            const double g = 9.81;
+            if (cannon.XAngle >= 0)
+            {
+                shift = cols / 2;
+                xAngle = cannon.XAngle;
+            }
+            else
+            {
+                xAngle = Math.Abs(cannon.XAngle);
+            }
 
             double xAngleRad = Math.PI * (double)xAngle / 180.0;
             double yAngleRad = Math.PI * (double)yAngle / 180.0;
@@ -216,16 +231,41 @@ namespace LandOfBattle
 
                 if (h <= blockSize * rows)
                 {
-                    //снаряд попадает в стену
+                    //расстояние от попадания, до перпендикуляра distance
+                    double b = distance * Math.Tan(xAngleRad);
+                    if(b <= blockSize * cols / 2)
+                    {
+                        //снаряд попадает в стену
+                        int col = (int)Math.Truncate(b / blockSize + shift);
+                        int row = (int)Math.Truncate(h / blockSize);
+                        hitMessage = "Попадание в " + col.ToString() + " блок " + row.ToString() + "-го ряда";
+                    }
+                    else
+                    {
+                        miss = b - blockSize * cols / 2;
+                        if (shift == 0)
+                        {
+                            //снаряд пролетел левее на miss метров
+                            hitMessage = "Снаряд пролетел левее на " + miss.ToString() + " метров";
+                        } else
+                        {
+                            //снаряд пролетел правее на miss метров
+                            hitMessage = "Снаряд пролетел правее на " + miss.ToString() + " метров";
+                        }
+                    }
+
                 }
                 else
                 {
                     //слишком высоко
+                    miss = h - blockSize * rows;
+                    hitMessage = "Снаряд пролетел выше стены на " + miss.ToString() + " метров";
                 }
             }
             else
             {
                 //снаряд недолетел
+                hitMessage = "Снаряд, пролетев " + Smax + " метров, недостиг стены";
             }
 
         }
