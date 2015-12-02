@@ -118,9 +118,9 @@ namespace LandOfBattle
                 else
                 {
 
-                    for(int r = row; row < rows; r++)
+                    for(int r = row; r < rows; r++)
                     {
-                        if (r + 1 < rows) arrWall[r, column].ChangeState(arrWall[r, column].State);
+                        if (r + 1 < rows) arrWall[r, column].ChangeState(arrWall[r + 1, column].State);
                         else arrWall[r, column].Destroy();
                     }
 
@@ -129,9 +129,9 @@ namespace LandOfBattle
                     {
                         while(arrWall[row, column].State == CPartOfWall.Target)
                         {
-                            for (int r = row; row < rows; r++)
+                            for (int r = row; r < rows; r++)
                             {
-                                if (r + 1 < rows) arrWall[r, column].ChangeState(arrWall[r, column].State);
+                                if (r + 1 < rows) arrWall[r, column].ChangeState(arrWall[r + 1, column].State);
                                 else arrWall[r, column].Destroy();
                             }
                         }

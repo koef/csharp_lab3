@@ -60,14 +60,6 @@ namespace LandOfBattle
             }
         }
 
-        //public Rectangle Rectangle
-        //{
-        //    get
-        //    {
-        //        return new Rectangle(Left, Top, Width, Height);
-        //    }
-        //}
-
         public void Destroy()
         {
             ChangeState(Empty);

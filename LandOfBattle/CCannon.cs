@@ -48,7 +48,7 @@ namespace LandOfBattle
 
         public void PullUp()
         {
-            if (YAngle < 18)
+            if (YAngle < 20)
             {
                 YAngle++;
                 Rotate(XAngle, YAngle, false);
