@@ -231,15 +231,15 @@ namespace LandOfBattle
             double miss;
 
             //угол поворота пушки
-            int xAngle;
+            double xAngle;
 
             //угол наклона пушки
-            int yAngle = cannon.YAngle;
+            double yAngle = cannon.YAngle;
             int powMultiplier = powLevel.Level;
 
             if (cannon.XAngle >= 0)
             {
-                shift = cols / 2 - 1;
+                shift = cols / 2;
                 xAngle = cannon.XAngle;
             }
             else
@@ -247,8 +247,8 @@ namespace LandOfBattle
                 xAngle = Math.Abs(cannon.XAngle);
             }
 
-            double xAngleRad = Math.PI * (double)xAngle / 180.0;
-            double yAngleRad = Math.PI * (double)yAngle / 180.0;
+            double xAngleRad = Math.PI * xAngle / 180.0;
+            double yAngleRad = Math.PI * yAngle / 180.0;
 
             if (powMultiplier == 0) powMultiplier = 1;
             double Pow = powMultiplier * minPow;

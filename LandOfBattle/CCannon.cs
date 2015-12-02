@@ -12,54 +12,65 @@ namespace LandOfBattle
     {
         private static Bitmap bitmapCannon = Resources.cannon;
         private static Bitmap bitmapCannonFire = Resources.cannon_fire;
-        public int XAngle, YAngle;
+
+        private int _XAngle, _YAngle;
+
+        public double XAngle
+        {
+            get { return _XAngle / 1.0; }
+        }
+
+        public double YAngle
+        {
+            get { return _YAngle / 2.0; }
+        }
 
         public CCannon() : base(Resources.cannon)
         {
-            XAngle = 0;
-            YAngle = 1;
+            _XAngle = 0;
+            _YAngle = 1;
         }
 
         public void TurnRight()
         {
-            if (XAngle < 20)
+            if (_XAngle < 20)
             {
-                XAngle++;
-                Rotate(XAngle, YAngle, false);
+                _XAngle++;
+                Rotate(_XAngle, _YAngle, false);
             }
         }
 
         public void TurnLeft()
         {
-            if (XAngle > -20)
+            if (_XAngle > -20)
             {
-                XAngle--;
-                Rotate(XAngle, YAngle, false);
+                _XAngle--;
+                Rotate(_XAngle, _YAngle, false);
             }
         }
 
         public void PullDown()
         {
-            if (YAngle > 1) {
-                YAngle--;
-                Rotate(XAngle, YAngle, false);
+            if (_YAngle > 1) {
+                _YAngle--;
+                Rotate(_XAngle, _YAngle, false);
             }
         }
 
         public void PullUp()
         {
-            if (YAngle < 20)
+            if (_YAngle < 20)
             {
-                YAngle++;
-                Rotate(XAngle, YAngle, false);
+                _YAngle++;
+                Rotate(_XAngle, _YAngle, false);
             }
         }
 
         private void Rotate(int _xangle, int _yangle, bool _isShooting)
         {
             Point[] destinationPoints = {
-                    new Point(0, -YAngle),   // destination for upper-left point of original
-                    new Point(_bitmap.Width, -YAngle),  // destination for upper-right point of original
+                    new Point(0, -_YAngle),   // destination for upper-left point of original
+                    new Point(_bitmap.Width, -_YAngle),  // destination for upper-right point of original
                     new Point(0, _bitmap.Height)};  // destination for lower-left point of original
             using (Graphics gfx = Graphics.FromImage(_bitmap))
             {
@@ -77,7 +88,7 @@ namespace LandOfBattle
 
         public void Fire(bool isShooting)
         {
-            Rotate(XAngle, YAngle, isShooting);
+            Rotate(_XAngle, _YAngle, isShooting);
         }
     }
 }
