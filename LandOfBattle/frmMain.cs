@@ -25,7 +25,7 @@ namespace LandOfBattle
         bool powLevelEnabled = false;
         bool cannonFireEnabled = false;
 
-        bool explosiveShells = false;
+        bool isExplosive = false;
 
         //counters
         int cannonFireCounter = 0;
@@ -45,6 +45,10 @@ namespace LandOfBattle
         double blockSize = 0.5;
         //начальная скорость ядра
         double minPow = 5;
+        //количество обычных снарядов
+        int normShells = 4;
+        //количество разрывных снарядов
+        int expShells = 2;
 
         CCannon cannon;
         CPowLevel powLevel;
@@ -52,11 +56,16 @@ namespace LandOfBattle
         CWall wall;
         
 
-
         public frmMain()
         {
             InitializeComponent();
 
+            InitGame();
+            DoubleBuffered = true;
+        }
+
+        private void InitGame()
+        {
             //инициализируем переменные из конфигурационного файла
             cols = Int32.Parse(ConfigurationManager.AppSettings["cols"]);
             rows = Int32.Parse(ConfigurationManager.AppSettings["rows"]);
@@ -64,14 +73,17 @@ namespace LandOfBattle
             distance = Int32.Parse(ConfigurationManager.AppSettings["distance"]);
             blockSize = Double.Parse(ConfigurationManager.AppSettings["blockSize"], CultureInfo.InvariantCulture);
             minPow = Double.Parse(ConfigurationManager.AppSettings["minPow"]);
+            normShells = Int32.Parse(ConfigurationManager.AppSettings["normShells"]);
+            expShells = Int32.Parse(ConfigurationManager.AppSettings["expShells"]);
+
+            hitMessage = "";
 
             cannon = new CCannon() { Left = 347, Top = 405 };
             powLevel = new CPowLevel() { Left = 810, Top = 15 };
             wall = new CWall(this.Width / 2 - CPartOfWall.Width * 6 / 2, 190, rows, cols, targets);
-            DoubleBuffered = true;
+
             tmrHeartbeat.Enabled = true;
         }
-
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -96,18 +108,18 @@ namespace LandOfBattle
                 new Rectangle(10, 75, 200, 20), SystemColors.ControlText, _textFlags);
 #endif
             //индикация типа снаряда
-            if (explosiveShells)
+            if (isExplosive)
             {
-                TextRenderer.DrawText(dc, "Разрывные", _font, new Rectangle(721, 22, 150, 20),
+                TextRenderer.DrawText(dc, "Разрывные: " + expShells.ToString(), _font, new Rectangle(691, 22, 150, 20),
                     Color.Black, _textFlags);
-                TextRenderer.DrawText(dc, "Разрывные", _font, new Rectangle(720, 20, 150, 20),
+                TextRenderer.DrawText(dc, "Разрывные: " + expShells.ToString(), _font, new Rectangle(690, 20, 150, 20),
                     Color.White, _textFlags);
             }
             else
             {
-                TextRenderer.DrawText(dc, "Обычные", _font, new Rectangle(721, 22, 150, 20),
+                TextRenderer.DrawText(dc, "Обычные: " + normShells.ToString(), _font, new Rectangle(691, 22, 150, 20),
                     Color.Black, _textFlags);
-                TextRenderer.DrawText(dc, "Обычные", _font, new Rectangle(720, 20, 150, 20),
+                TextRenderer.DrawText(dc, "Обычные: " + normShells.ToString(), _font, new Rectangle(690, 20, 150, 20),
                     Color.White, _textFlags);
             }
 
@@ -162,7 +174,7 @@ namespace LandOfBattle
             }
             if (e.KeyCode == Keys.Enter)
             {
-                explosiveShells = !explosiveShells;
+                isExplosive = !isExplosive;
                 Refresh();
             }
         }
@@ -173,7 +185,8 @@ namespace LandOfBattle
             {
                 powLevelEnabled = false;
                 cannonFireEnabled = true;
-                CannonFire();
+                if(isExplosive && expShells != 0) CannonFire();
+                if(!isExplosive && normShells != 0) CannonFire();
                 Refresh();
             }
         }
@@ -218,6 +231,8 @@ namespace LandOfBattle
 
         private void CannonFire()
         {
+            if (isExplosive) expShells--;
+            else normShells--;
             cannon.Fire(true);
             CalculateHit();
             powLevel.Reset();
@@ -302,7 +317,7 @@ namespace LandOfBattle
                         }
                         
                         row = (int)Math.Truncate(h / blockSize);
-                        wall.Hit(row, col, explosiveShells);
+                        wall.Hit(row, col, isExplosive);
                         hitMessage = "Попадание в " + col.ToString() + " блок " + row.ToString() + "-го ряда";
                     }
                     else
