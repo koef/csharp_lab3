@@ -27,6 +27,8 @@ namespace LandOfBattle
 
         bool isExplosive = false;
 
+        bool gameOver = false;
+
         //counters
         int cannonFireCounter = 0;
         int hitMessageCounter = 0;
@@ -59,7 +61,6 @@ namespace LandOfBattle
         public frmMain()
         {
             InitializeComponent();
-
             InitGame();
             DoubleBuffered = true;
         }
@@ -77,6 +78,8 @@ namespace LandOfBattle
             expShells = Int32.Parse(ConfigurationManager.AppSettings["expShells"]);
 
             hitMessage = "";
+            gameOver = false;
+            isExplosive = false;
 
             cannon = new CCannon() { Left = 347, Top = 405 };
             powLevel = new CPowLevel() { Left = 810, Top = 15 };
@@ -147,35 +150,44 @@ namespace LandOfBattle
 
         private void frmMain_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
+            if (e.KeyCode == Keys.Escape)
             {
-                cannon.TurnLeft();
+                InitGame();
                 Refresh();
             }
-            if (e.KeyCode == Keys.Right)
+
+            if (!gameOver)
             {
-                cannon.TurnRight();
-                Refresh();
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                cannon.PullUp();
-                Refresh();
-            }
-            if (e.KeyCode == Keys.Down)
-            {
-                cannon.PullDown();
-                Refresh();
-            }
-            if (e.KeyCode == Keys.Space)
-            {
-                powLevelEnabled = true;
-                hitMessage = "";
-            }
-            if (e.KeyCode == Keys.Enter)
-            {
-                isExplosive = !isExplosive;
-                Refresh();
+                if (e.KeyCode == Keys.Left)
+                {
+                    cannon.TurnLeft();
+                    Refresh();
+                }
+                if (e.KeyCode == Keys.Right)
+                {
+                    cannon.TurnRight();
+                    Refresh();
+                }
+                if (e.KeyCode == Keys.Up)
+                {
+                    cannon.PullUp();
+                    Refresh();
+                }
+                if (e.KeyCode == Keys.Down)
+                {
+                    cannon.PullDown();
+                    Refresh();
+                }
+                if (e.KeyCode == Keys.Space)
+                {
+                    powLevelEnabled = true;
+                    hitMessage = "";
+                }
+                if (e.KeyCode == Keys.Enter)
+                {
+                    isExplosive = !isExplosive;
+                    Refresh();
+                }
             }
         }
 
@@ -184,7 +196,6 @@ namespace LandOfBattle
             if (e.KeyCode == Keys.Space)
             {
                 powLevelEnabled = false;
-                cannonFireEnabled = true;
                 if(isExplosive && expShells != 0) CannonFire();
                 if(!isExplosive && normShells != 0) CannonFire();
                 Refresh();
@@ -218,8 +229,8 @@ namespace LandOfBattle
             {
                 if(hitMessageCounter >= 30)
                 {
-                    //hitMessage = "";
-                    //Refresh();
+                    hitMessage = "";
+                    Refresh();
                     hitMessageCounter = 0;
                 }
                 else
@@ -238,6 +249,7 @@ namespace LandOfBattle
             powLevel.Reset();
             SoundPlayer fireSound = new SoundPlayer(Resources.CannonSound);
             fireSound.Play();
+            cannonFireEnabled = true;
         }
 
 
@@ -347,7 +359,21 @@ namespace LandOfBattle
                 //снаряд недолетел
                 hitMessage = "Снаряд, пролетев " + Math.Round(Smax, 2).ToString() + " метров, недостиг стены";
             }
-
+            if(wall.TargetRemains == 0)
+            {
+                tmrHeartbeat.Enabled = false;
+                hitMessage = "Вы выиграли! Нажмите Esc для продолжения";
+                gameOver = true;
+            }
+            else
+            {
+                if(normShells == 0 && expShells == 0)
+                {
+                    tmrHeartbeat.Enabled = false;
+                    hitMessage = "Вы проиграли! Нажмите Esc для продолжения";
+                    gameOver = true;
+                }
+            }
         }
     }
 }
